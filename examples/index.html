@@ -1,0 +1,46 @@
+<html data-ng-app="app">
+  <head>
+    <meta charset="utf-8">
+    <title>SVG Styling Maps with AngularJS</title>
+  </head>
+  <body data-ng-controller="AppController">
+    <div style="width: 450px">
+      <h1>Styled Map</h1>
+      <svg-map path="maps/br.svg" map="map"></svg-map>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+    <!--<script src="https://unpkg.com/angular-facebook-factory@1.1.2/dist/bundle.min.js"></script>-->
+    <script src="../dist/bundle.min.js"></script>
+    <script>
+      angular
+        .module('app', ['ngSvgStylingMap'])
+        .controller('AppController', ['$scope', '$timeout',function($scope, $timeout) {
+          $scope.map = {
+            '#br .estado path': {
+              fill: '#F9EDBE',
+              stroke: 'black'
+            },
+            '#br .estado text': {
+              fill: 'black',
+              stroke: 'black'
+            }
+          }
+          $timeout(function() {
+            $scope.map = {
+              '#to path': {
+                fill: '#F0C36D'
+              }
+            }
+          }, 2500)
+          $timeout(function() {
+            $scope.map = {
+              '#pr path': {
+                fill: '#F0C36D'
+              }
+            }
+          }, 5000)
+        }])
+    </script>
+  </body>
+</html>

@@ -6,7 +6,10 @@
   <body data-ng-controller="AppController">
     <div style="width: 250px">
       <h1>Styled Map</h1>
-      <svg-map path="maps/br.svg" base="base" map="map"></svg-map>
+      <button type="button" data-ng-click="styleMap()">
+        SP & MS
+      </button>
+      <svg-map path="maps/br.svg" elm-act="apply()" base="base" map="map"></svg-map>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
@@ -16,14 +19,32 @@
       angular
         .module('app', ['ngSvgStylingMap'])
         .controller('AppController', ['$scope', '$timeout',function($scope, $timeout) {
-          $scope.base = {
-            '#br path': {
-              fill: '#F9EDBE',
-              stroke: 'black'
-            },
-            '#br text': {
-              fill: 'black',
-              stroke: 'black'
+          $scope.baseInit = function () {
+            $scope.base = {
+              '#br path': {
+                fill: '#F9EDBE',
+                stroke: 'black'
+              },
+              '#br text': {
+                fill: 'black',
+                stroke: 'black'
+              },
+              '#br .estado': {
+                'click': function(e) {
+                  console.log('click2', angular.element(e.target))
+                }
+              }
+            }
+          }
+          $scope.baseInit()
+          $scope.styleMap = function () {
+            $scope.map = {
+              '#sp path': {
+                fill: '#F0C36D'
+              },
+              '#ms path': {
+                fill: '#F0C36D'
+              }
             }
           }
           $timeout(function() {

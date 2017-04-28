@@ -2,11 +2,12 @@ export default {
   bindings: {
     path: '@',
     base: '<',
-    map: '<'
+    map: '<',
+    elmAct: '&'
   },
   template: `<object type="image/svg+xml" ng-attr-data="{{$ctrl.path}}"></object>`,
   controller: function ($element) {
-    let ctrl = this, svg
+    let ctrl = this, svg, count = 0
 
     let update = map => {
       Object.keys(map).map(selector => {
@@ -17,7 +18,11 @@ export default {
       }).map(control => {
         control.nodes.forEach(node => {
           for (let prop in control.props) {
-            node.style[prop] = control.props[prop]
+            switch(prop) {
+              case 'click': node.addEventListener('click', control.props[prop].bind(this), false); break;
+              case 'dbclick': node.addEventListener('dbclick', control.props[prop].bind(this), false); break;
+              default: node.style[prop] = control.props[prop]
+            }
           }
         })
       })
@@ -32,7 +37,7 @@ export default {
       let object = $element[0].querySelector('object')
       object.addEventListener('load', () => {
         svg = object.contentDocument
-        apply()
+        if (count == 0) apply()
       }, false)
     }
   }

@@ -1,2 +1,2 @@
-# ng-heat-map
-Heat maps with angular 1.x
+# ng-svg-styling-map
+SVG styling maps with angular 1.x

@@ -74,24 +74,14 @@ angular
     }
     $timeout(function() {
       $scope.props = {
-        '#mt path': { fill: '#F0C36D' }
+        '#pr path': { fill: '#F0C36D' }
       }
     }, 2500)
     $timeout(function() {
       $scope.props = {
-        '#pr path': { fill: '#F0C36D' }
-      }
-    }, 5000)
-    $timeout(function() {
-      $scope.props = {
-        '#mt path': { fill: '#F0C36D' },
-        '#ms path': { fill: '#F0C36D' }
-      }
-    }, 7500)
-    $timeout(function() {
-      $scope.props = {
+        '#sp path': { fill: '#F0C36D' },
         '#sc path': { fill: '#F0C36D' }
       }
-    }, 10000)
+    }, 5000)
   }])
 ```

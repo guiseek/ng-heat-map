@@ -1,26 +1,71 @@
-<html data-ng-app="app">
+<!DOCTYPE html>
+<html lang="en" data-ng-app="app">
   <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SVG Styling Maps with AngularJS</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
   </head>
   <body data-ng-controller="AppController">
-    <div style="width: 250px">
-      <h1>Styled Map</h1>
-      <button type="button" data-ng-click="styleMap()">
-        SP & MS
-      </button>
-      <svg-map path="maps/br.svg" elm-act="apply()" base="base" map="map"></svg-map>
+    <div class="container">
+      <div class="header clearfix">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation" data-ng-class="{ active: isActive('/')}"><a href="#!/">SVG Logo</a></li>
+            <li role="presentation" data-ng-class="{ active: isActive('/map')}"><a href="#!/map">BR Map</a></li>
+          </ul>
+        </nav>
+        <h3 class="text-muted">NG SVG Styling Map</h3>
+      </div>
+      <main ng-view></main>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
-    <script src="https://unpkg.com/ng-svg-styling-map@0.0.3/dist/bundle.min.js"></script>
-    <script src="../dist/bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular-route.min.js"></script>
+    <script src="https://unpkg.com/ng-svg-styling-map@1.0.0/dist/bundle.min.js"></script>
+    <!--<script src="../dist/bundle.min.js"></script>-->
     <script>
       angular
-        .module('app', ['ngSvgStylingMap'])
-        .controller('AppController', ['$scope', '$timeout',function($scope, $timeout) {
-          $scope.baseInit = function () {
-            $scope.base = {
+        .module('app', ['ngRoute','ngSvgStylingMap'])
+        .config(['$routeProvider', function($routeProvider) {
+          $routeProvider
+            .when('/', {
+              templateUrl: 'views/logo.html',
+              controller: 'LogoController'
+            })
+            .when('/map', {
+              templateUrl: 'views/map.html',
+              controller: 'MapController'
+            })
+        }])
+        .controller('AppController', ['$scope','$location',function($scope, $location) {
+          $scope.isActive = function (viewLocation) { 
+            return viewLocation === $location.path()
+          }
+        }])
+        .controller('LogoController', ['$scope',function($scope) {
+          $scope.changeSymbol = function() {
+            $scope.props = {
+              '#svgbar': {
+                fill: '#000',
+                stroke: '#EDA921'
+              }
+            }
+          }
+          $scope.changeText = function() {
+            $scope.props = {
+              '#SVG': {
+                fill: '#000'
+              }
+            }            
+          }
+        }])
+        .controller('MapController', ['$scope', '$timeout',function($scope, $timeout) {
+          $scope.props = {}
+          var start = function () {
+            $scope.init = {
               '#br path': {
                 fill: '#F9EDBE',
                 stroke: 'black'
@@ -28,54 +73,64 @@
               '#br text': {
                 fill: 'black',
                 stroke: 'black'
-              },
-              '#br .estado': {
-                'click': function(e) {
-                  console.log('click2', angular.element(e.target))
-                }
               }
             }
           }
-          $scope.baseInit()
-          $scope.styleMap = function () {
-            $scope.map = {
-              '#sp path': {
-                fill: '#F0C36D'
-              },
-              '#ms path': {
+          start()
+          $scope.changeProps = function () {
+            $scope.props = {
+              '#sp path': { fill: '#F0C36D' },
+              '#ms path': { fill: '#F0C36D' }
+            }
+          }
+          $scope.events = {
+            '.estado': ['click'],
+            '#pr': ['click'],
+            '#rs': ['click']
+          }
+          $scope.event = function(name, element, selector) {
+            // Example of native application
+            // element.style.fill = 'red'
+
+            // Example of props application
+            // Because i assigned #br property
+            if (selector == '.estado') {
+              // Do somethind in parent context
+              $scope.props[selector + ' path'] = {
+                fill: '#FFF'
+              }
+              $scope.props['#' + element.parentNode.id + ' path'] = {
                 fill: '#F0C36D'
               }
+              // You may need to use the $apply method
+              $scope.$apply()
+            } else {
+              $scope.props['#' + element.parentNode.id + ' path'] = {
+                fill: '#F0C36D'
+              }
+              // You may need to use the $apply method
+              $scope.$digest()
             }
           }
           $timeout(function() {
-            $scope.map = {
-              '#mt path': {
-                fill: '#F0C36D'
-              }
+            $scope.props = {
+              '#mt path': { fill: '#F0C36D' }
             }
           }, 2500)
           $timeout(function() {
-            $scope.map = {
-              '#pr path': {
-                fill: '#F0C36D'
-              }
+            $scope.props = {
+              '#pr path': { fill: '#F0C36D' }
             }
           }, 5000)
           $timeout(function() {
-            $scope.map = {
-              '#sc path': {
-                fill: '#F0C36D'
-              },
-              '#mt path': {
-                fill: '#F0C36D'
-              }
+            $scope.props = {
+              '#mt path': { fill: '#F0C36D' },
+              '#ms path': { fill: '#F0C36D' }
             }
           }, 7500)
           $timeout(function() {
-            $scope.map = {
-              '#rs path': {
-                fill: '#F0C36D'
-              }
+            $scope.props = {
+              '#sc path': { fill: '#F0C36D' }
             }
           }, 10000)
         }])

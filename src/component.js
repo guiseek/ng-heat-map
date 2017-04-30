@@ -1,43 +1,58 @@
 export default {
   bindings: {
-    path: '@',
-    base: '<',
-    map: '<',
-    elmAct: '&'
+    src: '@',
+    init: '<',
+    props: '<',
+    events: '<',
+    onEvent: '&'
   },
-  template: `<object type="image/svg+xml" ng-attr-data="{{$ctrl.path}}"></object>`,
+  template: `<object type="image/svg+xml" ng-attr-data="{{$ctrl.src}}"></object>`,
   controller: function ($element) {
-    let ctrl = this, svg, count = 0
+    let ctrl = this, svg
 
-    let update = map => {
-      Object.keys(map).map(selector => {
+    let getNodesAndProps = obj => {
+      return Object.keys(obj).map(selector => {
         return {
           nodes: svg.querySelectorAll(selector),
-          props: map[selector]
+          props: obj[selector],
+          selector: selector
         }
-      }).map(control => {
+      })
+    }
+    let updateProps = props => {
+      getNodesAndProps(props).map(control => {
         control.nodes.forEach(node => {
           for (let prop in control.props) {
-            switch(prop) {
-              case 'click': node.addEventListener('click', control.props[prop].bind(this), false); break;
-              case 'dbclick': node.addEventListener('dbclick', control.props[prop].bind(this), false); break;
-              default: node.style[prop] = control.props[prop]
-            }
+            node.style[prop] = control.props[prop]
           }
         })
       })
     }
-    let apply = () => {
-      if (svg && ctrl.base) update(ctrl.base)
-      if (svg && ctrl.map) update(ctrl.map)
+    let applyProps = () => {
+      if (svg && ctrl.init) updateProps(ctrl.init)
+      if (svg && ctrl.props) updateProps(ctrl.props)
     }
-    ctrl.$onChanges = () => apply()
-    ctrl.$doCheck = () => apply()
+    let applyEvents = () => {
+      if (svg && ctrl.events && ctrl.onEvent) {
+        getNodesAndProps(ctrl.events).map(control => {
+          control.nodes.forEach(node => {
+            control.props.map(prop => {
+              node.addEventListener(prop, function(e) {
+                ctrl.onEvent({name: prop, element: e.target, selector: control.selector})
+              }, false)
+            })
+          })
+        })
+      }
+    }
+    ctrl.$onChanges = () => applyProps()
+    ctrl.$doCheck = () => applyProps()
     ctrl.$postLink = () => {
       let object = $element[0].querySelector('object')
       object.addEventListener('load', () => {
         svg = object.contentDocument
-        if (count == 0) apply()
+        applyProps()
+        applyEvents()
       }, false)
     }
   }

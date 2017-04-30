@@ -1,6 +1,6 @@
 {
   "name": "ng-svg-styling-map",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SVG styling maps with angular 1.x",
   "main": "src/index.js",
   "scripts": {

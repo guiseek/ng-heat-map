@@ -12,11 +12,9 @@ export default {
 
     let getNodesAndProps = obj => {
       return Object.keys(obj).map(selector => {
-        return {
-          nodes: svg.querySelectorAll(selector),
-          props: obj[selector],
-          selector: selector
-        }
+        let nodes = []
+        try {nodes = svg.querySelectorAll(selector)} catch (e) {}
+        return {nodes, props: obj[selector], selector}
       })
     }
     let updateProps = props => {

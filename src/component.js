@@ -12,43 +12,43 @@ export default {
 
     let getNodesAndProps = obj => {
       return Object.keys(obj).map(selector => {
-        return {
-          nodes: svg.querySelectorAll(selector),
-          props: obj[selector],
-          selector: selector
-        }
+        let nodes = []
+        try {nodes = svg.querySelectorAll(selector)} catch (e) {}
+        return {nodes, props: obj[selector], selector}
       })
     }
     let updateProps = props => {
-      getNodesAndProps(props).map(control => {
+      getNodesAndProps(props).forEach(control => {
         control.nodes.forEach(node => {
-          for (let prop in control.props) {
+          Object.keys(control.props).forEach(prop => {
             node.style[prop] = control.props[prop]
-          }
+          })
         })
       })
     }
     let applyProps = () => {
-      if (svg && ctrl.init) updateProps(ctrl.init)
-      if (svg && ctrl.props) updateProps(ctrl.props)
+      if (!svg) return
+
+      if (ctrl.init) updateProps(ctrl.init)
+      if (ctrl.props) updateProps(ctrl.props)
     }
     let applyEvents = () => {
-      if (svg && ctrl.events && ctrl.onEvent) {
-        getNodesAndProps(ctrl.events).map(control => {
-          control.nodes.forEach(node => {
-            control.props.map(prop => {
-              node.addEventListener(prop, function(e) {
-                ctrl.onEvent({name: prop, element: e.target, selector: control.selector})
-              }, false)
-            })
+      if (!svg || !ctrl.events || !ctrl.onEvent) return false
+
+      getNodesAndProps(ctrl.events).forEach(control => {
+        control.nodes.forEach(node => {
+          Object.keys(control.props).forEach(prop => {
+            node.addEventListener(prop, e => {
+              ctrl.onEvent({name: prop, element: e.target, selector: control.selector})
+            }, false)
           })
         })
-      }
+      })
     }
     ctrl.$onChanges = () => applyProps()
     ctrl.$doCheck = () => applyProps()
     ctrl.$postLink = () => {
-      let object = $element[0].querySelector('object')
+      let object = $element[0].querySelector('object');
       object.addEventListener('load', () => {
         svg = object.contentDocument
         applyProps()

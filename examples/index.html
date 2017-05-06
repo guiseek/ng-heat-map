@@ -24,8 +24,8 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular-route.min.js"></script>
-    <script src="https://unpkg.com/ng-svg-styling-map@1.0.2/dist/bundle.min.js"></script>
-    <!--<script src="../dist/bundle.min.js"></script>-->
+    <!--<script src="https://unpkg.com/ng-svg-styling-map@1.1.0/dist/bundle.min.js"></script>-->
+    <script src="../dist/bundle.min.js"></script>
     <script>
       angular
         .module('app', ['ngRoute','ngSvgStylingMap'])
@@ -41,7 +41,7 @@
             })
         }])
         .controller('AppController', ['$scope','$location',function($scope, $location) {
-          $scope.isActive = function (viewLocation) { 
+          $scope.isActive = function (viewLocation) {
             return viewLocation === $location.path()
           }
         }])
@@ -59,7 +59,7 @@
               '#SVG': {
                 fill: '#000'
               }
-            }            
+            }
           }
         }])
         .controller('MapController', ['$scope', '$timeout',function($scope, $timeout) {

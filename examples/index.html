@@ -83,6 +83,14 @@
               '#ms path': { fill: '#F0C36D' }
             }
           }
+          $scope.changeElement = function (element) {
+            $scope.props = {}
+            $scope.props['#' + element + ' path'] = {
+              fill: '#F0C36D'
+            }
+            $scope.$apply()
+            $scope.$digest()
+          }
           $scope.events = {
             '.estado': ['click'],
             '#pr': ['click'],
